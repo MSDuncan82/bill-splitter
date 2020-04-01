@@ -5,10 +5,10 @@ It can either split all items evenly or take in a list of purchase ids per
 person. If given a list of purchase ids it will split each item's cost for 
 only the people that bought it.
 
-  Typical usage example:
+Typical usage example:
 
-  foo = ClassFoo()
-  bar = foo.FunctionBar()
+    splitter = BillSplitter(purchases_df)
+    result_df = splitter.get_result_df()
 """
 
 import numpy as np
@@ -19,12 +19,23 @@ class BillSplitter(object):
     def __init__(self, purchases_df):
 
         self.purchases_df = purchases_df
+    
+    def get_result_df(self):
+
+        split_df = self.get_split_df()
+        totals = self.get_totals()
+
+        result_df = split_df.append(totals)
+
+        return result_df
 
     def get_totals(self):
 
         split_df = self.get_split_df().drop('product', axis=1)
 
         totals_ser = split_df.sum(axis=0)
+        totals_ser.name = 'TOTAL'
+
         return totals_ser
 
     def get_split_df(self):
@@ -63,4 +74,5 @@ if __name__ == '__main__':
     splitter = BillSplitter(purchases_df)
     split_df = splitter.get_split_df()
     totals = splitter.get_totals() 
+    result_df = splitter.get_result_df()
 

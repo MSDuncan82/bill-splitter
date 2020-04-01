@@ -1,9 +1,8 @@
 """Navigate file structure to read and write data appropriately.
 
-The BillSplitter class can split an itemized bill between multiple people.
-It can either split all items evenly or take in a list of purchase ids per
-person. If given a list of purchase ids it will split each item's cost for 
-only the people that bought it.
+Contains FileReader and FileWriter classes that both inherit from 
+the FileNavigator class. These are used to organize the receipt
+directories and files.
 
 Typical usage example:
 
@@ -46,13 +45,54 @@ class FileReader(FileNavigator):
     def __init__(self, receipts_dir):
         super().__init__(receipts_dir)
 
+    def csv_locator(self, directory, recursive=True):
+
+        if recursive:
+            return self._csv_locator_recursive(directory)
+        else:
+            return self._csv_locator_single_dir(directory)
+    
+    def _csv_locator_recursive(self, directory):
+
+        csv_filepaths = []
+        for subdir, _, files in os.walk(directory):
+            for filename in files:
+                if filename.endswith('.csv'):
+                    csv_filepaths.append(os.path.join(subdir, filename))
+
+        return csv_filepaths
+
+    def _csv_locator_single_dir(self, directory):
+
+        files = os.listdir(directory)
+        csv_files = [f'{directory}/{file}' for file in files if file.endswith('.csv')]
+
+        return csv_files
+
     def read_receipt(self, receipt_csv_path):
 
         return pd.read_csv(receipt_csv_path)
+    
+
+
+class FileWriter(FileNavigator):
+    
+    def __init__(self, receipts_dir):
+        super().__init__(receipts_dir)
+
+    def save_split_results(self, result_df, receipt_split_result_path):
+
+        result_df.to_csv(receipt_split_result_path)
 
 if __name__ == '__main__':
 
-    file_navigator = FileNavigator('/home/mike/finances/receipts')
+    receipts_dir = '/home/mike/finances/receipts'
+
+    file_navigator = FileNavigator(receipts_dir)
 
     current_date = file_navigator._get_current_date()
     file_navigator._make_yr_mo_dir(current_date, suffix='_test')
+
+    file_reader = FileReader(receipts_dir)
+
+    csv_files = file_reader.csv_locator('/home/mike')
