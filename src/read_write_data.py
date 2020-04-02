@@ -6,9 +6,11 @@ directories and files.
 
 Typical usage example:
 
-    splitter = BillSplitter(purchases_df)
-    split_df = splitter.get_split_df()
-    totals = splitter.get_totals() 
+    file_reader = read_write_data.FileReader(receipts_dirpath)
+    file_writer = read_write_data.FileWriter(receipts_dirpath)
+
+    csv_filepaths = file_reader.find_csv_filepaths(receipts_dirpath)
+    file_writer.save_split_results(result_dfs_with_meta)
 """
 
 import numpy as np
@@ -77,14 +79,34 @@ class FileReader(FileNavigator):
     def __init__(self, receipts_dirpath):
         super().__init__(receipts_dirpath)
 
-    def find_csv_filepaths(self, dirpath, recursive=True):
+    def get_csv_filepaths_with_meta(self):
+        
+        csv_filepaths = self._find_csv_filepaths(self.receipts_dirpath)
+        
+        csv_filpaths_with_meta = []
+        for csv_filepath in csv_filepaths:
+
+            yr_mo_directory = self.get_yr_mo_directory(csv_filepath)
+            store_name = self.get_store_name(csv_filepath)
+
+            csv_meta_dict = {
+                'csv_filepath':csv_filepath, 
+                'yr_mo_directory':yr_mo_directory,
+                'store_name':store_name 
+                }
+
+            csv_filpaths_with_meta.append(csv_meta_dict)
+
+        return csv_filpaths_with_meta
+
+    def _find_csv_filepaths(self, dirpath, recursive=True):
 
         if recursive:
             return self._find_csv_files_recursive(dirpath)
         else:
             return self._find_csv_files_single_dir(dirpath)
 
-    def read_receipt(self, receipt_csv_path):
+    def _read_receipt(self, receipt_csv_path):
 
         return pd.read_csv(receipt_csv_path)
     

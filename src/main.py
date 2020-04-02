@@ -7,21 +7,7 @@ def get_csv_filepaths_with_meta(receipts_dirpath: str) -> list:
     
     file_reader = read_write_data.FileReader(receipts_dirpath)
 
-    csv_filepaths = file_reader.find_csv_filepaths(receipts_dirpath)
-    
-    csv_filpaths_with_meta = []
-    for csv_filepath in csv_filepaths:
-
-        yr_mo_directory = file_reader.get_yr_mo_directory(csv_filepath)
-        store_name = file_reader.get_store_name(csv_filepath)
-
-        csv_meta_dict = {
-            'csv_filepath':csv_filepath, 
-            'yr_mo_directory':yr_mo_directory,
-            'store_name':store_name 
-            }
-
-        csv_filpaths_with_meta.append(csv_meta_dict)
+    csv_filpaths_with_meta = file_reader.get_csv_filepaths_with_meta()
 
     return csv_filpaths_with_meta
 
