@@ -33,7 +33,7 @@ class FileNavigator(object):
 
     def get_yr_mo_directory(self, filepath):
 
-        yr_str, mo_str, day_str = self._get_date_strings_from_filepath(filepath)
+        yr_str, mo_str, _ = self._get_date_strings_from_filepath(filepath)
         yr_mo_directory = f'{yr_str}-{mo_str}'
 
         return yr_mo_directory
