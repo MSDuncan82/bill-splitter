@@ -22,26 +22,19 @@ class FileNavigator(object):
     def __init__(self, receipts_dirpath):
         self.receipts_dirpath = receipts_dirpath
 
+    def get_store_name(self, filepath):
+
+        filename = filepath.split('/')[-1]
+        store_name = filename.split('_')[0]
+        
+        return store_name
+
     def get_yr_mo_directory(self, filepath):
 
-        try:
-            yr_str, mo_str, day_str = self._get_date_strings_from_file(filepath)
-        except AttributeError:
-            return -1
-            
+        yr_str, mo_str, day_str = self._get_date_strings_from_filepath(filepath)
         yr_mo_directory = f'{yr_str}-{mo_str}'
 
         return yr_mo_directory
-
-    def _get_date_strings_from_file(self, filepath):
-
-        filename = filepath.split('/')[-1]
-        pattern = r"_(.*?)\."
-        
-        date_str = re.search(pattern, filename).group(1)
-        yr_str, mo_str, day_str = date_str.split('-')
-
-        return yr_str, mo_str, day_str
 
     def make_yr_mo_dir_from_string(self, directory_string, suffix=''):
         
@@ -53,6 +46,16 @@ class FileNavigator(object):
             os.mkdir(os.path.join(self.receipts_dirpath, directory_string))
         except FileExistsError:
             pass
+
+    def _get_date_strings_from_filepath(self, filepath):
+
+        filename = filepath.split('/')[-1]
+        pattern = r"_(.*?)\."
+        
+        date_str = re.search(pattern, filename).group(1)
+        yr_str, mo_str, day_str = date_str.split('-')
+
+        return yr_str, mo_str, day_str
     
     def _get_yr_mo_string_from_timestamp(self, ts):
 
@@ -74,19 +77,23 @@ class FileReader(FileNavigator):
     def __init__(self, receipts_dirpath):
         super().__init__(receipts_dirpath)
 
-    def find_csv_files(self, directory, recursive=True):
+    def find_csv_filepaths(self, dirpath, recursive=True):
 
         if recursive:
-            return self._find_csv_files_recursive(directory)
+            return self._find_csv_files_recursive(dirpath)
         else:
-            return self._find_csv_files_single_dir(directory)
+            return self._find_csv_files_single_dir(dirpath)
+
+    def read_receipt(self, receipt_csv_path):
+
+        return pd.read_csv(receipt_csv_path)
     
     def _find_csv_files_recursive(self, dirpath):
 
         csv_filepaths = []
         for subdir, _, files in os.walk(dirpath):
             for filename in files:
-                if filename.endswith('.csv'):
+                if self._filename_matches_receipt_format(filename):
                     csv_filepaths.append(os.path.join(subdir, filename))
 
         return csv_filepaths
@@ -94,30 +101,44 @@ class FileReader(FileNavigator):
     def _find_csv_files_single_dir(self, dirpath):
 
         files = os.listdir(dirpath)
-        csv_files = [f'{dirpath}/{file}' for file in files if file.endswith('.csv')]
+        csv_files = [
+            f'{dirpath}/{filename}' for filename in files 
+            if self._filename_matches_receipt_format(filename)
+            ]
 
         return csv_files
 
-    def read_receipt(self, receipt_csv_path):
+    def _filename_matches_receipt_format(self, filename):
 
-        return pd.read_csv(receipt_csv_path)
+        pattern = r'^[A-Z]+_[\d]{4}-[\d]{2}-[\d]{2}.csv$'
+
+        return re.match(pattern, filename)
     
 class FileWriter(FileNavigator):
     
     def __init__(self, receipts_dirpath):
         super().__init__(receipts_dirpath)
 
-    def save_split_results(self, result_dfs_with_yr_mo_dir):
+    def save_split_results(self, result_dfs_with_meta):
 
-        for result_df, yr_mo_dir in result_dfs_with_yr_mo_dir:
+        for result_df_with_meta_dict in result_dfs_with_meta:
+            
+            result_df = result_df_with_meta_dict['result_df']
+            yr_mo_string = result_df_with_meta_dict['yr_mo_directory']
+            store_name = result_df_with_meta_dict['store_name']
 
-            results_dirpath = os.path.join(self.receipts_dirpath, yr_mo_dir)
-            results_filepath = os.path.join(results_dirpath, f'{yr_mo_dir}.csv')
+            results_dirpath = os.path.join(
+                self.receipts_dirpath, yr_mo_string
+                )
+            results_filepath = os.path.join(
+                results_dirpath, f'{store_name}_{yr_mo_string}_split.csv'
+                )
             self.make_yr_mo_dir_from_string(results_dirpath)
 
             self._save_single_split_result_to_path(result_df, results_filepath)
 
-    def _save_single_split_result_to_path(self, result_df, receipt_split_result_path):
+    def _save_single_split_result_to_path(self, result_df, 
+                                          receipt_split_result_path):
 
         result_df.to_csv(receipt_split_result_path)
 
