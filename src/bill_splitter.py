@@ -33,7 +33,7 @@ class BillSplitter(object):
 
         split_df = self.get_split_df().drop('product', axis=1)
 
-        totals_ser = split_df.sum(axis=0)
+        totals_ser = split_df.sum(axis=0).round(2)
         totals_ser.name = 'TOTAL'
 
         return totals_ser
