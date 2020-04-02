@@ -26,6 +26,7 @@ class BillSplitter(object):
         totals = self.get_totals()
 
         result_df = split_df.append(totals)
+        result_df.index = result_df.index.astype(str)
 
         return result_df
 
@@ -70,9 +71,5 @@ class BillSplitter(object):
             
 if __name__ == '__main__':
 
-    purchases_df = pd.read_csv('data/example.csv')
-    splitter = BillSplitter(purchases_df)
-    split_df = splitter.get_split_df()
-    totals = splitter.get_totals() 
-    result_df = splitter.get_result_df()
+    pass
 

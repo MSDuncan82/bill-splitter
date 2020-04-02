@@ -99,16 +99,16 @@ class FileReader(FileNavigator):
 
         return csv_filpaths_with_meta
 
+    def read_receipt(self, receipt_csv_path):
+
+        return pd.read_csv(receipt_csv_path)
+
     def _find_csv_filepaths(self, dirpath, recursive=True):
 
         if recursive:
             return self._find_csv_files_recursive(dirpath)
         else:
             return self._find_csv_files_single_dir(dirpath)
-
-    def _read_receipt(self, receipt_csv_path):
-
-        return pd.read_csv(receipt_csv_path)
     
     def _find_csv_files_recursive(self, dirpath):
 
