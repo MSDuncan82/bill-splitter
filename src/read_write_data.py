@@ -90,8 +90,8 @@ class FileReader(FileNavigator):
             store_name = self.get_store_name(csv_filepath)
 
             csv_meta_dict = {
-                'csv_filepath':csv_filepath, 
-                'yr_mo_directory':yr_mo_directory,
+                'purchases_data':csv_filepath, 
+                'yr_mo_str':yr_mo_directory,
                 'store_name':store_name 
                 }
 
@@ -141,23 +141,21 @@ class FileWriter(FileNavigator):
     def __init__(self, receipts_dirpath):
         super().__init__(receipts_dirpath)
 
-    def save_split_results(self, result_dfs_with_meta):
+    def save_split_results(self, split_costs_list):
 
-        for result_df_with_meta_dict in result_dfs_with_meta:
-            
-            result_df = result_df_with_meta_dict['result_df']
-            yr_mo_string = result_df_with_meta_dict['yr_mo_directory']
-            store_name = result_df_with_meta_dict['store_name']
+        for split_cost in split_costs_list:
 
             results_dirpath = os.path.join(
-                self.receipts_dirpath, yr_mo_string
+                self.receipts_dirpath, split_cost.yr_mo_str
                 )
+
             results_filepath = os.path.join(
-                results_dirpath, f'{store_name}_{yr_mo_string}_split.csv'
+                results_dirpath, f'{split_cost.store_name}_{split_cost.yr_mo_str}_split.csv'
                 )
+            
             self.make_yr_mo_dir_from_string(results_dirpath)
 
-            self._save_single_split_result_to_path(result_df, results_filepath)
+            self._save_single_split_result_to_path(split_cost.result_df, results_filepath)
 
     def _save_single_split_result_to_path(self, result_df, 
                                           receipt_split_result_path):
