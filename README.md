@@ -27,9 +27,9 @@ $ cd ~/some/path/to/keep/program/files
 $ git clone https://github.com/MSDuncan82/bill-splitter
 ```
 
-To run the program use:
+To run the program run the following commands:
 
 ```bash
-$ cd ~/some/path/to/keep/program/files/bill-splitter.src
+$ cd ~/some/path/to/keep/program/files/bill-splitter/src
 $ python main.py ~/path/to/receipts/dir
 ```
