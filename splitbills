@@ -1,0 +1,6 @@
+#!/bin/bash
+
+conda activate bill_splitter
+cd $HOME/projects/finance/bill-splitter/src &&
+python main.py $HOME/finances/receipts
+conda deactivate bill_splitter
