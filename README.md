@@ -12,7 +12,7 @@ Please let me know if you have any comments!!
 
 The program will search a given directory and all subdirectories that match the specific format *STORENAME_YYYY-MM-DD.csv*. It will then create new files *STORENAME_YYYY-MM-DD_split.csv* for each file that matches the format.
 
-These new files will be organized into directories named for each "YYYY-MM/" combination as determined by the file names.
+These new files will be organized into directories named for each *YYYY-MM/* combination as determined by the file names.
 
 The template.csv for a receipt is in the */example* directory.
 
