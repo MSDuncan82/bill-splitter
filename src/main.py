@@ -18,17 +18,6 @@ def get_split_costs(csv_filpaths_with_meta: list) -> list:
         SplitBill(**csv_filpath_with_meta) for csv_filpath_with_meta in csv_filpaths_with_meta
         ]
 
-    # for csv_filepath_with_meta_dict in result_dfs_with_meta:
-
-    #     csv_filepath = csv_filepath_with_meta_dict['csv_filepath']
-    #     purchases_df = pd.read_csv(csv_filepath)
-    #     splitter = BillSplitter(purchases_df)
-    #     result_df = splitter.get_result_df()
-
-    #     csv_filepath_with_meta_dict.update({'result_df':result_df})
-
-    # return result_dfs_with_meta
-
 def save_split_dfs_to_csv(receipts_dirpath: str, split_costs_list: list):
     
     file_writer = FileWriter(receipts_dirpath)
