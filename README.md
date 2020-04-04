@@ -20,16 +20,4 @@ No files will be deleted!
 
 ### Usage
 
-First clone the repo to your local machine:
-
-```bash
-$ cd ~/some/path/to/keep/program/files
-$ git clone https://github.com/MSDuncan82/bill-splitter
-```
-
-To run the program run the following commands:
-
-```bash
-$ cd ~/some/path/to/keep/program/files/bill-splitter/src
-$ python main.py ~/path/to/receipts/dir
-```
+I have `splitbills` in my ~/bin folder which is on my path. This allows me to use the command `$ splitbills` from anywhere on my machine to run the script. Much of the code for execution is hardcoded so it may take some edits to make it work on your machine. A more user friendly version is a work in progress.
