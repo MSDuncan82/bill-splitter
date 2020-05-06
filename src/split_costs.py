@@ -39,8 +39,12 @@ class SplitBill(Receipt):
         self.purchases_df = purchase_df
 
     def _get_purchase_df_from_csv(self, csv_path):
+        
+        if csv_path.endswith('.csv'):
+            purchases_df = pd.read_csv(csv_path)
 
-        purchases_df = pd.read_csv(csv_path)
+        elif csv_path.endswith('.xlsx'): 
+            purchases_df = pd.read_excel(csv_path)
 
         return purchases_df
     

@@ -59,7 +59,11 @@ class Receipt(object):
 
     def _set_receipt_df_from_csv(self, csv_path):
 
-        self.receipt_df = pd.read_csv(csv_path, usecols=self.columns)
+        if csv_path.endswith('csv'):
+            self.receipt_df = pd.read_csv(csv_path, usecols=self.columns)
+
+        elif csv_path.endswith('.xlsx'):
+            self.receipt_df = pd.read_excel(csv_path, usecols=self.columns)
 
     def _set_receipt_df_from_df(self, receipt_df):
 

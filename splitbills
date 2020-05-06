@@ -1,6 +1,6 @@
 #!/bin/bash -i
 
-source activate bill_splitter
+source activate finance
 cd $HOME/projects/finance/bill-splitter/src &&
 python main.py $HOME/finances/receipts
 source $HOME/.bashrc

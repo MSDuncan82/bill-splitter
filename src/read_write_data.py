@@ -132,7 +132,7 @@ class FileReader(FileNavigator):
 
     def _filename_matches_receipt_format(self, filename):
 
-        pattern = r'^[A-Z]+_[\d]{4}-[\d]{2}-[\d]{2}.csv$'
+        pattern = r'^[A-Z]+_[\d]{4}-[\d]{2}-[\d]{2}.(csv|xlsx)$'
 
         return re.match(pattern, filename)
     

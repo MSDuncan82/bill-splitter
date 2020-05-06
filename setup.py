@@ -1,3 +1,11 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-setup(name='bill_splitter', version='1.0', packages=find_packages())
+setup(
+    name='src',
+    packages=find_packages(),
+    version='0.1.0',
+    description='Analyzing the effect of drive times on gym user behavior.',
+    author='Cavalier',
+    license='',
+)
+
